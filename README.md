@@ -1,0 +1,1 @@
+Simple distributed system for hash cracking
