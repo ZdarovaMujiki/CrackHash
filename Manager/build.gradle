@@ -5,7 +5,6 @@ plugins {
 }
 
 group = 'ru.nsu.ccfit.crackhash'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {

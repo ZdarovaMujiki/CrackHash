@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  manager:
+    build:
+      context: Manager
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8080
+    networks:
+      - crackhash-network
+  worker:
+    build:
+      context: Worker
+      dockerfile: ./Dockerfile
+    ports:
+      - 8001:8080
+    networks:
+      - crackhash-network
+networks:
+  crackhash-network:
+    driver: bridge

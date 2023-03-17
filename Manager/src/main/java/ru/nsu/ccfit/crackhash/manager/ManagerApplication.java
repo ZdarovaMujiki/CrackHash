@@ -10,5 +10,4 @@ public class ManagerApplication {
         System.out.println("Manager started");
         SpringApplication.run(ManagerApplication.class, args);
     }
-
-}   
+}
