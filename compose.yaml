@@ -6,17 +6,21 @@ services:
       context: Manager
       dockerfile: ./Dockerfile
     ports:
-      - 8000:8080
-    networks:
-      - crackhash-network
+      - "8080:8080"
+    depends_on:
+      - nginx
   worker:
     build:
       context: Worker
       dockerfile: ./Dockerfile
+    scale: ${WORKERS_AMOUNT}
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - 8001:8080
-    networks:
-      - crackhash-network
-networks:
-  crackhash-network:
-    driver: bridge
+      - "8001:8001"
+    expose:
+      - "8001"
+    depends_on:
+      - worker
