@@ -1,24 +1,44 @@
 package ru.nsu.ccfit.crackhash.manager;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import generated.Request;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import ru.nsu.ccfit.crackhash.manager.DTO.HashRequest;
+
+import java.util.UUID;
 
 @RestController
 public class ManagerController {
-    @GetMapping("/api/hash/crack")
-    public String get() {
-        WebClient client = WebClient.create("http://nginx:8001");
 
-        Mono<ResponseEntity<String>> response = client.get()
-                .uri("/internal/api/worker/hash/crack/task")
-                .retrieve()
-                .toEntity(String.class);
+    WebClient client = WebClient.create("http://nginx:8001");
 
-        var result = response.block().getBody();
-        System.out.println(result);
-        return result;
+    @PostMapping("/api/hash/crack")
+    public String crack(@RequestBody HashRequest hashRequest) {
+        String uuid = UUID.randomUUID().toString();
+
+        int partCount = Integer.parseInt(System.getenv("WORKERS_AMOUNT"));
+
+        for (int i = 0; i < partCount; i++) {
+            Request request = new Request();
+            request.setHash(hashRequest.getHash());
+            request.setMaxlength(hashRequest.getMaxLength());
+            request.setPartCount(partCount);
+            request.setPartNumber(i);
+
+            var flux = client.post()
+                    .uri("/internal/api/worker/hash/crack/task")
+                    .contentType(MediaType.TEXT_XML)
+                    .body(Mono.just(request), Request.class)
+                    .retrieve()
+                    .bodyToFlux(Integer.class);
+
+            flux.subscribe(System.out::println);
+        }
+
+        return uuid;
     }
 }
