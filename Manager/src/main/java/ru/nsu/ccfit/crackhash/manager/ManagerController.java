@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import ru.nsu.ccfit.crackhash.manager.DTO.HashRequest;
 
+import java.time.Duration;
 import java.util.UUID;
 
 @RestController
@@ -29,14 +30,14 @@ public class ManagerController {
             request.setPartCount(partCount);
             request.setPartNumber(i);
 
-            var flux = client.post()
+            client.post()
                     .uri("/internal/api/worker/hash/crack/task")
                     .contentType(MediaType.TEXT_XML)
                     .body(Mono.just(request), Request.class)
                     .retrieve()
-                    .bodyToFlux(Integer.class);
-
-            flux.subscribe(System.out::println);
+                    .bodyToFlux(String.class)
+                    .timeout(Duration.ofMillis(60000))
+                    .subscribe(System.out::println);
         }
 
         return uuid;
