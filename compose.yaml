@@ -11,11 +11,14 @@ services:
       - nginx
     environment:
       - WORKERS_AMOUNT
+      - PROXY_URL
   worker:
     build:
       context: Worker
       dockerfile: ./Dockerfile
     scale: ${WORKERS_AMOUNT}
+    environment:
+      - MANAGER_URL
   nginx:
     image: nginx:latest
     volumes:
