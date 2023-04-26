@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.crackhash.manager.DTO;
+package ru.nsu.ccfit.crackhash.manager.model;
 
 import lombok.Getter;
 import lombok.Setter;
