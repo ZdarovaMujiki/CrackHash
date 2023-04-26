@@ -27,39 +27,31 @@ public class WorkerController {
         String targetHash = request.getHash();
         int length = request.getMaxlength();
 
-        long totalWordsAmount = (long) Math.pow(alphabet.length, length);
-        long wordsAmount = totalWordsAmount / partCount;
-        long wordsRemain = totalWordsAmount % partCount;
-
-        long start = wordsAmount * partNumber;
-        long end = start + wordsAmount;
-
-        if (partNumber < wordsRemain) {
-            start += partNumber;
-            end += partNumber + 1;
-        } else {
-            start += wordsRemain;
-            end += wordsRemain;
-        }
-
         Response response = new Response();
         response.setId(request.getId());
 
         var generator = createPermutationWithRepetitionGenerator(vector, length);
-        long index = 0;
-        for (var letters : generator) {
-            if (index >= start) {
-                String word = String.join("", letters.getVector());
-                String hash = DigestUtils.md5Hex(word);
+        var iterator = generator.iterator();
+        ICombinatoricsVector<String> letters = iterator.next();
+        for (int i = 0; i < partNumber; i++) {
+            letters = iterator.next();
+        }
 
-                if (hash.equals(targetHash)) {
-                    response.setData(word);
-                    break;
-                }
+        while (true) {
+            String word = String.join("", letters.getVector());
+            String hash = DigestUtils.md5Hex(word);
+            if (hash.equals(targetHash)) {
+                response.setData(word);
+                break;
             }
 
-            index++;
-            if (index == end) break;
+            if (!iterator.hasNext()) {
+                break;
+            }
+
+            for (int i = 0; i < partCount && iterator.hasNext(); i++) {
+                letters = iterator.next();
+            }
         }
 
         client.post()
