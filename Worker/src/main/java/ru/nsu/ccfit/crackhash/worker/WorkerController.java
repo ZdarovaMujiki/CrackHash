@@ -16,7 +16,7 @@ import static org.paukov.combinatorics.CombinatoricsFactory.createVector;
 
 @RestController
 public class WorkerController {
-    private final String[] alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+    private final String[] alphabet = "abcdefghijklmnopqrstuvwxyz0123456789".split("");
     private final ICombinatoricsVector<String> vector = createVector(alphabet);
     private final WebClient client = WebClient.create(System.getenv("MANAGER_URL"));
 
