@@ -4,11 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
 import ru.nsu.ccfit.crackhash.manager.Constants;
 
 @Getter
 @Setter
 public class TaskData {
+    @Id
+    @JsonIgnore
+    private String id;
     @JsonIgnore
     private int responseAmount;
     private Status status = Status.IN_PROGRESS;
