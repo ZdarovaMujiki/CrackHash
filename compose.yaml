@@ -8,7 +8,6 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - nginx
       - mongodb1
     environment:
       - WORKERS_AMOUNT
@@ -25,7 +24,6 @@ services:
   mongodb1:
     image: mongo:4
     restart: always
-    container_name: mongodb1
     logging:
       driver: none
     volumes:
@@ -36,7 +34,6 @@ services:
   mongodb2:
     image: mongo:4
     restart: always
-    container_name: mongodb2
     logging:
       driver: none
     volumes:
@@ -47,7 +44,6 @@ services:
   mongodb3:
     image: mongo:4
     restart: always
-    container_name: mongodb3
     logging:
       driver: none
     volumes:
@@ -63,18 +59,12 @@ services:
       - mongodb1
     volumes:
       - mongostatus:/data/
-  
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      
+  rabbitmq:
+    image: rabbitmq:3-management
     ports:
-      - "8001:8001"
-    expose:
-      - "8001"
-    depends_on:
-      - worker
-  
+      - '5672:5672'
+      - '15672:15672'
 volumes:
   mongodata1:
   mongodata2:

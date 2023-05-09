@@ -60,6 +60,8 @@ dependencies {
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
     implementation 'com.googlecode.combinatoricslib:combinatoricslib:2.3'
     implementation 'commons-codec:commons-codec:1.15'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp:3.0.4'
+    implementation 'org.springframework:spring-oxm:6.0.8'
     jaxb("org.glassfish.jaxb:jaxb-xjc")
 }
 

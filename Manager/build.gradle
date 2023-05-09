@@ -59,6 +59,8 @@ dependencies {
     implementation 'javax.activation:activation:1.1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp:3.0.4'
+    implementation 'org.springframework:spring-oxm:6.0.8'
     jaxb("org.glassfish.jaxb:jaxb-xjc")
 }
 

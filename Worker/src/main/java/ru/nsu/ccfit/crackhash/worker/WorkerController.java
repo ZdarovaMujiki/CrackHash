@@ -4,12 +4,11 @@ import generated.Request;
 import generated.Response;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.paukov.combinatorics.ICombinatoricsVector;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import static org.paukov.combinatorics.CombinatoricsFactory.createPermutationWithRepetitionGenerator;
 import static org.paukov.combinatorics.CombinatoricsFactory.createVector;
@@ -18,9 +17,11 @@ import static org.paukov.combinatorics.CombinatoricsFactory.createVector;
 public class WorkerController {
     private final String[] alphabet = "abcdefghijklmnopqrstuvwxyz0123456789".split("");
     private final ICombinatoricsVector<String> vector = createVector(alphabet);
-    private final WebClient client = WebClient.create(System.getenv("MANAGER_URL"));
 
-    @PostMapping("/internal/api/worker/hash/crack/task")
+    @Autowired
+    private AmqpTemplate template;
+
+    @RabbitListener(queues = "requestQueue")
     public void task(@RequestBody Request request) {
         int partCount = request.getPartCount();
         int partNumber = request.getPartNumber();
@@ -54,12 +55,6 @@ public class WorkerController {
             }
         }
 
-        client.post()
-                .uri("/internal/api/manager/hash/crack/request")
-                .contentType(MediaType.TEXT_XML)
-                .body(Mono.just(response), Response.class)
-                .retrieve()
-                .bodyToFlux(String.class)
-                .subscribe();
+        template.convertAndSend("responseQueue", response);
     }
 }
