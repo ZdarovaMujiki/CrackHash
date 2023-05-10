@@ -7,6 +7,8 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import ru.nsu.ccfit.crackhash.manager.Constants;
 
+import java.util.Arrays;
+
 @Getter
 @Setter
 public class TaskData {
@@ -14,13 +16,18 @@ public class TaskData {
     @JsonIgnore
     private String id;
     @JsonIgnore
-    private int responseAmount;
+    private Boolean[] isResponded = new Boolean[Constants.WORKERS_AMOUNT];
     private Status status = Status.IN_PROGRESS;
     private String data;
 
-    public void incrementResponseAmount() {
-        responseAmount++;
-        if (responseAmount == Constants.WORKERS_AMOUNT) {
+    public TaskData() {
+        Arrays.fill(isResponded, false);
+    }
+
+    public void setResponse(int id) {
+        isResponded[id] = true;
+
+        if (Arrays.stream(isResponded).allMatch(responded -> responded)) {
             status = Status.READY;
         }
     }

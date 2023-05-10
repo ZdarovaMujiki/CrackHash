@@ -74,7 +74,7 @@ public class ManagerController {
         if (optionalTaskData.isPresent()) {
             TaskData taskData = optionalTaskData.get();
 
-            taskData.incrementResponseAmount();
+            taskData.setResponse(response.getPartNumber());
             taskData.setData(response.getData());
             taskRepository.save(taskData);
         }
