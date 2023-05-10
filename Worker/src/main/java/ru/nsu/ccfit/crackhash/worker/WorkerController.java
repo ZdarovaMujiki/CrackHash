@@ -5,6 +5,7 @@ import generated.Response;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.paukov.combinatorics.ICombinatoricsVector;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,6 +56,9 @@ public class WorkerController {
             }
         }
 
-        template.convertAndSend("responseQueue", response);
+        template.convertAndSend("responseQueue", response, message -> {
+            message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+            return message;
+        });
     }
 }
