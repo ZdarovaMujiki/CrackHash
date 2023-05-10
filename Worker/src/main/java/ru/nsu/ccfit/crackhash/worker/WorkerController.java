@@ -30,7 +30,7 @@ public class WorkerController {
         int length = request.getMaxlength();
 
         Response response = new Response();
-        response.setId(request.getId());
+        response.setId(request.getTaskId());
 
         var generator = createPermutationWithRepetitionGenerator(vector, length);
         var iterator = generator.iterator();

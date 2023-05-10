@@ -2,6 +2,7 @@ package ru.nsu.ccfit.crackhash.manager.configuration;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
         ConnectionString connectionString = new ConnectionString("mongodb://mongodb1:27017,mongodb2:27017,mongodb3:27017/?replicaSet=rsmongo");
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
+                .readPreference(ReadPreference.primaryPreferred())
                 .build();
 
         return MongoClients.create(mongoClientSettings);
